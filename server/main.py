@@ -6,6 +6,9 @@ import pandas as pd
 import numpy as np
 import joblib
 import os
+from model import RevoNeuralNetwork
+import torch
+import torch.nn as nn
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
@@ -45,6 +48,28 @@ class Encode:
 
     def get_encoded_data(self):
         return self.encoded_data
+def predictPrice(encoded_data):
+        # Load the model /home/jibril/Documents/REvoEstatePricePrediction/Trainig/state_dictmodel.pth
+        mean=torch.load(os.path.join(BASE_DIR, "Trainig/mean.pt"))
+        std=torch.load(os.path.join(BASE_DIR, "Trainig/std.pt"))
+        Y_mean=torch.load(os.path.join(BASE_DIR, "Trainig/Y_mean.pt"))
+        Y_std=torch.load(os.path.join(BASE_DIR, "Trainig/Y_std.pt"))
+        input_tensor = torch.tensor(encoded_data, dtype=torch.float32).unsqueeze(0)
+        input_tensor_scaled = (input_tensor - mean) / std
+        # Load the model
+
+        loadedmodel = RevoNeuralNetwork()
+        loadedmodel.load_state_dict(torch.load(os.path.join(BASE_DIR, "Trainig/state_dictmodel.pth")))
+        
+        # Make prediction
+        loadedmodel.eval()
+        with torch.no_grad():
+            y_pred = loadedmodel(input_tensor_scaled)
+            y_pred_raw = torch.exp(y_pred * Y_std + Y_mean)  # Reverse log transformation
+            print(f'Prediction: {y_pred_raw.item():.1f}')  
+                
+        # Return the prediction
+        return y_pred_raw.item()
 
 @app.post("/predict")
 def predict(property: Property):
@@ -68,5 +93,8 @@ def predict(property: Property):
     property_type_encoder.encode()
     encoded.extend(property_type_encoder.get_encoded_data().flatten().tolist())
 
-    return {"encoded_features": encoded}
+
+    predictedprice=predictPrice(encoded)
+
+    return {"Predicted Price": predictedprice}
 
