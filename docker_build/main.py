@@ -50,11 +50,7 @@ class Encode:
             print(f"Input: {input_data}")
             self.encoded_data = self.encoder.transform(input_data)
             print(f"Encoded: {self.encoded_data}")
-        # except FileNotFoundError:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        #         detail=f"Encoder file not found: {self.filename}"
-        #     )
+       
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
