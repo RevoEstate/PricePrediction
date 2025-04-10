@@ -71,7 +71,6 @@ def predictPrice(encoded_data):
         std = torch.load("std.pt")
         Y_mean = torch.load("Y_mean.pt")
         Y_std = torch.load("Y_std.pt")
-        # print(f"Encoded data length: {len(encoded_data)}")
 
         input_tensor = torch.tensor(encoded_data, dtype=torch.float32).unsqueeze(0)
         input_tensor_scaled = (input_tensor - mean) / std
@@ -98,7 +97,7 @@ def predictPrice(encoded_data):
 
 @app.post("/predict")
 @limiter.limit("100/hour")  
-async def predict(property: Property):
+async def predict(property: Property, request: Request):
     try:
         if property.Land_Area <= 0:
             raise HTTPException(
