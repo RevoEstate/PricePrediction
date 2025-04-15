@@ -94,8 +94,28 @@ def predictPrice(encoded_data):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Unexpected error during prediction"
         )
+@app.get("/", response_model=dict)
+@limiter.limit("100/hour")
+async def welcome_to_revoestate_priceprediction(request: Request):
+    base_url = str(request.base_url)
+    return {
+        "message": "Hello! Welcome to RevoEstate Price Prediction API",
+        "personal_note": "This API is crafted with care to help you predict property prices effortlessly.",
+        "description": "This API predicts the price of properties based on features like bedrooms, bathrooms, land area, and more.",
+        "documentation": f"{base_url}docs",
+        "alternative_docs": f"{base_url}redoc",
+        "version": "1.0.0",
+        "how_to_test": (
+            "Explore the interactive API docs at /docs or send a POST request to /predict. "
+            "Example using curl:\n"
+            f"curl -X POST {base_url}predict -H 'Content-Type: application/json' -d "
+            '\'{"Bedrooms": 3, "Bathrooms": 2, "Land_Area": 100.0, "Year": 2023, "Status": "For Sale", '
+            '"Furnished": "Yes", "Address": "Bole", "Property_Type": "Apartment"}\''
+        )
+    }
 
-@app.post("/predict")
+
+@app.post("/predict", response_model=dict)
 @limiter.limit("100/hour")  
 async def predict(property: Property, request: Request):
     try:
