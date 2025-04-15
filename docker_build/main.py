@@ -98,21 +98,18 @@ def predictPrice(encoded_data):
 @limiter.limit("100/hour")
 async def welcome_to_revoestate_priceprediction(request: Request):
     base_url = str(request.base_url)
-    return {
-        "message": "Hello! Welcome to RevoEstate Price Prediction API",
-        "personal_note": "This API is crafted with care to help you predict property prices effortlessly.",
-        "description": "This API predicts the price of properties based on features like bedrooms, bathrooms, land area, and more.",
-        "documentation": f"{base_url}docs",
-        "alternative_docs": f"{base_url}redoc",
-        "version": "1.0.0",
-        "how_to_test": (
-            "Explore the interactive API docs at /docs or send a POST request to /predict. "
-            "Example using curl:\n"
-            f"curl -X POST {base_url}predict -H 'Content-Type: application/json' -d "
-            '\'{"Bedrooms": 3, "Bathrooms": 2, "Land_Area": 100.0, "Year": 2023, "Status": "For Sale", '
-            '"Furnished": "Yes", "Address": "Bole", "Property_Type": "Apartment"}\''
-        )
-    }
+    return{
+  "message": "Hello! Welcome to RevoEstate Price Prediction API",
+  "personal_note": "Crafted to make property price predictions simple and reliable!",
+  "description": "This API predicts property prices based on features like bedrooms, bathrooms, land area, and location.",
+  "documentation": "https://jibrla-revoestate.hf.space/docs",
+  "documentation_note": "Paste this URL in your browser for interactive API docs (Swagger UI).",
+  "alternative_docs": "https://jibrla-revoestate.hf.space/redoc",
+  "alternative_docs_note": "Paste this URL for the ReDoc interface.",
+  "version": "1.0.0",
+  "test_predict": "Send a POST request to /predict to get a price prediction. Example using curl:\n curl -X POST https://jibrla-revoestate.hf.space/predict -H 'Content-Type: application/json' -d '{\"Bedrooms\": 3, \"Bathrooms\": 2, \"Land_Area\": 100.0, \"Year\": 2023, \"Status\": \"For Sale\", \"Furnished\": \"Yes\", \"Address\": \"Bole\", \"Property_Type\": \"Apartment\"}'",
+  "quick_tip": "Visit /docs to try the API directly in your browser!"
+}
 
 
 @app.post("/predict", response_model=dict)
