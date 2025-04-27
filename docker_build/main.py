@@ -143,7 +143,7 @@ async def predict(property: Property, request: Request):
 
         predicted_price = predictPrice(encoded)
 
-        return {"Predicted Price": predicted_price}
+        return {"PredictedPrice": predicted_price}
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
